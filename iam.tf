@@ -44,13 +44,9 @@ resource "aws_iam_role_policy" "github_actions_s3" {
         Action = [
           "s3:CreateBucket",
           "s3:DeleteBucket",
-          "s3:GetBucketTagging",
-          "s3:PutBucketTagging",
-          "s3:GetBucketPolicy",
-          "s3:GetBucketAcl",
-          "s3:GetBucketCors",
-          "s3:GetBucketWebsite",
-          "s3:GetBucketVersioning"
+          "s3:ListBucket",
+          "s3:Get*",
+          "s3:PutBucketTagging"
         ]
 
         Resource = [
