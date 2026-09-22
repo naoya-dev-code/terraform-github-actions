@@ -1,12 +1,21 @@
-name: Terraform CI
+name: Terraform CI/CD
 
 on:
   push:
     branches:
       - main
+
   pull_request:
     branches:
       - main
+
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "Run terraform apply"
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   id-token: write
@@ -22,26 +31,6 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-
-      - name: Debug OIDC claims
-        shell: bash
-        run: |
-          RESPONSE=$(curl -sS \
-            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
-
-          TOKEN=$(echo "$RESPONSE" | python3 -c 'import sys,json; print(json.load(sys.stdin)["value"])')
-
-          TOKEN="$TOKEN" python3 - <<'PY'
-          import os, json, base64
-
-          payload = os.environ["TOKEN"].split(".")[1]
-          payload += "=" * (-len(payload) % 4)
-          claims = json.loads(base64.urlsafe_b64decode(payload))
-
-          print("sub =", claims.get("sub"))
-          print("aud =", claims.get("aud"))
-          PY
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -63,3 +52,7 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan
+
+      - name: Terraform Apply
+        if: github.event_name == 'workflow_dispatch' && inputs.apply == true
+        run: terraform apply -auto-approve
