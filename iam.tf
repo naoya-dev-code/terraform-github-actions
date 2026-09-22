@@ -81,6 +81,18 @@ resource "aws_iam_role_policy" "github_actions_s3" {
           "arn:aws:s3:::naoya-terraform-github-actions-state/terraform-github-actions/terraform.tfstate",
           "arn:aws:s3:::naoya-terraform-github-actions-state/terraform-github-actions/terraform.tfstate.tflock"
         ]
+      },
+      {
+        Effect = "Allow"
+
+        Action = [
+          "iam:GetRole",
+          "iam:GetRolePolicy"
+        ]
+
+        Resource = [
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/GitHubActions-Terraform-Deploy"
+        ]
       }
     ]
   })
