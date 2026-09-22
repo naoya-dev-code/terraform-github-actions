@@ -19,6 +19,9 @@ resource "aws_iam_role" "github_actions" {
         Condition = {
           StringEquals = {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
+          }
+
+          StringLike = {
             "token.actions.githubusercontent.com:sub" = "repo:naoya-dev-code@331569008/terraform-github-actions@1381602096:ref:refs/heads/main"
           }
         }
