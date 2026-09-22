@@ -87,7 +87,8 @@ resource "aws_iam_role_policy" "github_actions_s3" {
 
         Action = [
           "iam:GetRole",
-          "iam:GetRolePolicy"
+          "iam:GetRolePolicy",
+          "iam:ListRolePolicies"
         ]
 
         Resource = [
